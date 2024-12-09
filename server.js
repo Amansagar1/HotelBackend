@@ -32,7 +32,9 @@ connectDB();
 
 
 
-
+// // After booking creation
+// sendBookingConfirmationEmail(user); // Send confirmation email immediately
+// sendBookingReminder(user, bookingDate);
 //---auth
 // Example Protected Route
 app.get('/protected', authMiddleware, (req, res) => {
