@@ -6,6 +6,21 @@ const superDeluxeRoomSchema = new mongoose.Schema({
     required: true,
     default: "Super Deluxe Room",
   },
+  rating:{
+    type: Number,
+    required: true,
+    default: 0,
+    min: 0,
+    max: 5,
+  },
+  available:{
+    type: [String],
+    required: true,
+  },
+  roomnumber:{
+    type: Number,
+    required: true,
+  },
   size: {
     type: String,
     required: true,

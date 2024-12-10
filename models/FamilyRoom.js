@@ -6,8 +6,23 @@ const familyRoomSchema = new mongoose.Schema({
     required: true,
     default: "Family Room",
   },
+  rating:{
+    type: Number,
+    required: true,
+    default: 0,
+    min: 0,
+    max: 5,
+  },
   size: {
     type: String,
+    required: true,
+  },
+  available:{
+    type: [String],
+    required: true,
+  },
+  roomnumber:{
+    type: Number,
     required: true,
   },
   maxOccupancy: {
