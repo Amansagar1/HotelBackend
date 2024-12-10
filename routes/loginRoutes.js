@@ -1,6 +1,6 @@
 const express = require('express');
-const passport = require('../config/passport'); // Import passport configuration
-const { generateToken } = require('../utils/jwtUtils'); // Your JWT generation function
+const passport = require('../config/passport');
+const { generateToken } = require('../utils/jwtUtils'); 
 const router = express.Router();
 const jwtAuthMiddleware = require('../middlewares/jwtAuthMiddleware');
 

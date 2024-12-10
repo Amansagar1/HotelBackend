@@ -10,6 +10,21 @@ exports.getAllDeluxeRooms = async (req, res) => {
   }
 };
 
+
+exports.getDeluxeRoomByNumber = async (req, res) => {
+  try {
+    const roomnumber = req.params.roomnumber;  // Room number from URL parameters
+    const room = await DeluxeRoom.findOne({ roomnumber: roomnumber });  // Query for the room number
+
+    if (!room) {
+      return res.status(404).json({ message: "Deluxe room not found" });  // If room not found
+    }
+
+    res.status(200).json(room);  // Return the room data
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching deluxe room by room number", error });  // Handle server errors
+  }
+};
 // POST a new deluxe room
 exports.createDeluxeRoom = async (req, res) => {
   try {

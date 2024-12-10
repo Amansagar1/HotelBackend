@@ -5,6 +5,18 @@ const deluxeRoomSchema = new mongoose.Schema({
   size: { type: String, default: "150 sq ft" },
   maxOccupancy: { type: Number, default: 2 },
   amenities: [String],
+  available:[String],
+  roomnumber:{
+    type: Number,
+    required: true,
+  },
+  rating:{
+    type: Number,
+    required: true,
+    default: 0,
+    min: 0,
+    max: 5,
+  },
   features: [String],
   bedsAndBlankets: [String],
   safetyAndSecurity: [String],

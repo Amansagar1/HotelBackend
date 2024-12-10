@@ -48,15 +48,12 @@ app.use("/api/super-deluxe-rooms", superDeluxeRoomRoutes);
 app.use("/api/family-rooms", familyRoomRoutes);
 app.use('/api/amenities', amenitiesRouter);
 app.use('/api/auth', authRoutes);
+
 // Error Handler
 app.use(errorHandler);
 //--------End
 
-// Connect to MongoDB
-// mongoose
-//   .connect(process.env.MONGODB_URI)
-//   .then(() => console.log('Connected to MongoDB'))
-//   .catch((err) => console.error('MongoDB connection error:', err));
+
 // Basic route to check server status
 app.get('/', (req, res) => {
     res.send('Hotel Booking API is running...');

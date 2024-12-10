@@ -1,12 +1,36 @@
 const Room = require('../models/Room');
 const createError = require('http-errors');
 
-// Create a new room type
+// // Create a new room type
+// exports.createRoom = async (req, res, next) => {
+//   try {
+//     const { type, size, occupancy, amenities, description,price,beds,rating, image } = req.body;
+
+//     const newRoom = new Room({ type, size, occupancy, amenities,description, price, beds, rating, image });
+//     const savedRoom = await newRoom.save();
+
+//     res.status(201).json({ message: 'Room created successfully', data: savedRoom });
+//   } catch (error) {
+//     next(createError(400, error.message));
+//   }
+// };
 exports.createRoom = async (req, res, next) => {
   try {
-    const { type, size, occupancy, amenities } = req.body;
+    // Destructure the fields from the request body
+    const { type, size, occupancy, amenities, description, price, beds, rating, image } = req.body;
 
-    const newRoom = new Room({ type, size, occupancy, amenities });
+    // Validate required fields
+    if (!type || !size || !occupancy || !description || !price || !beds || !rating || !image) {
+      return next(createError(400, 'All fields are required'));
+    }
+
+    // Check if the room type already exists
+    const existingRoom = await Room.findOne({ type });
+    if (existingRoom) {
+      return next(createError(400, 'Room type already exists'));
+    }
+
+    const newRoom = new Room({ type, size, occupancy, amenities, description, price, beds, rating, image });
     const savedRoom = await newRoom.save();
 
     res.status(201).json({ message: 'Room created successfully', data: savedRoom });
@@ -14,7 +38,6 @@ exports.createRoom = async (req, res, next) => {
     next(createError(400, error.message));
   }
 };
-
 // Get all room types
 exports.getAllRooms = async (req, res, next) => {
   try {
