@@ -6,6 +6,6 @@ router.get("/", deluxeRoomController.getAllDeluxeRooms);
 router.post("/", deluxeRoomController.createDeluxeRoom);
 router.put("/:id", deluxeRoomController.updateDeluxeRoom);
 router.delete("/:id", deluxeRoomController.deleteDeluxeRoom);
-router.get("/:roomnumber", deluxeRoomController.getDeluxeRoomByNumber);
+router.get("/:id", deluxeRoomController.getDeluxeRoomById);
 
 module.exports = router;

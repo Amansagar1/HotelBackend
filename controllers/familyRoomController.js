@@ -10,21 +10,23 @@ exports.getAllFamilyRooms = async (req, res) => {
   }
 };
 
-
-exports.getFamilyRoomByNumber = async (req, res) => {
+exports.getFamilyRoomById = async (req, res) => {
   try {
-    const roomnumber = req.params.roomnumber;  // Room number from URL parameters
-    const room = await FamilyRoom.findOne({ roomnumber: roomnumber });  // Query for the room number
+    const roomId = req.params.id; 
+    const room = await FamilyRoom.findById(roomId); 
 
     if (!room) {
-      return res.status(404).json({ message: "FamilyRoom room not found" });  // If room not found
+      return res.status(404).json({ message: "Family Room not found" }); 
     }
-
-    res.status(200).json(room);  // Return the room data
+    res.status(200).json(room); 
   } catch (error) {
-    res.status(500).json({ message: "Error fetching FamilyRoom room by room number", error });  // Handle server errors
+    res.status(500).json({
+      message: "Error fetching Family Room by ID",
+      error: error.message, 
+    });
   }
 };
+
 // POST a new Family Room
 exports.createFamilyRoom = async (req, res) => {
   try {
