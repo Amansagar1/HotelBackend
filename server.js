@@ -10,6 +10,7 @@ const superDeluxeRoomRoutes = require("./routes/superDeluxeRoomRoutes");
 const familyRoomRoutes = require("./routes/familyRoomRoutes");
 const amenitiesRouter = require('./routes/amenityRoutes');
 const authRoutes = require('./routes/authRoutes'); 
+const bookingRoutes = require("./routes/bookingRoutes");
 const authMiddleware = require('./middlewares/authMiddleware'); 
 const connectDB = require('./config/db');
 const app = express();
@@ -48,7 +49,7 @@ app.use("/api/super-deluxe-rooms", superDeluxeRoomRoutes);
 app.use("/api/family-rooms", familyRoomRoutes);
 app.use('/api/amenities', amenitiesRouter);
 app.use('/api/auth', authRoutes);
-
+app.use("/api", bookingRoutes);
 // Error Handler
 app.use(errorHandler);
 //--------End

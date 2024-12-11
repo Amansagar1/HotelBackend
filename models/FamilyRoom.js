@@ -6,6 +6,7 @@ const familyRoomSchema = new mongoose.Schema({
     required: true,
     default: "Family Room",
   },
+  price: { type: Number, required: true },
   rating:{
     type: Number,
     required: true,

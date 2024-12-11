@@ -10,21 +10,23 @@ exports.getAllDeluxeRooms = async (req, res) => {
   }
 };
 
-
-exports.getDeluxeRoomByNumber = async (req, res) => {
+exports.getDeluxeRoomById = async (req, res) => {
   try {
-    const roomnumber = req.params.roomnumber;  // Room number from URL parameters
-    const room = await DeluxeRoom.findOne({ roomnumber: roomnumber });  // Query for the room number
+    const roomId = req.params.id; 
+    const room = await DeluxeRoom.findById(roomId); 
 
     if (!room) {
-      return res.status(404).json({ message: "Deluxe room not found" });  // If room not found
+      return res.status(404).json({ message: " Deluxe Room not found" }); 
     }
-
-    res.status(200).json(room);  // Return the room data
+    res.status(200).json(room); 
   } catch (error) {
-    res.status(500).json({ message: "Error fetching deluxe room by room number", error });  // Handle server errors
+    res.status(500).json({
+      message: "Error fetching  Deluxe Room by ID",
+      error: error.message, 
+    });
   }
 };
+
 // POST a new deluxe room
 exports.createDeluxeRoom = async (req, res) => {
   try {
@@ -37,15 +39,21 @@ exports.createDeluxeRoom = async (req, res) => {
 };
 
 // PUT to update an existing deluxe room
+
+
+
 exports.updateDeluxeRoom = async (req, res) => {
   try {
     const updatedRoom = await DeluxeRoom.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updatedRoom) {
+      return res.status(404).json({ message: "Deluxe Room not found" });
+    }
     res.status(200).json(updatedRoom);
   } catch (error) {
-    res.status(500).json({ message: "Error updating deluxe room", error });
+    console.error("Error updating deluxe room:", error);
+    res.status(500).json({ message: "Error updating Deluxe Room", error: error.message });
   }
 };
-
 // DELETE a deluxe room
 exports.deleteDeluxeRoom = async (req, res) => {
   try {
