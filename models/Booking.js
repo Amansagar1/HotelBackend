@@ -18,6 +18,7 @@ const bookingSchema = new mongoose.Schema({
   price: { type: Number, required: true },
   title: { type: String, required: true },
   bookingDate: { type: Date, default: Date.now },
+  available : { type: String, required: true},
 });
 
 module.exports = mongoose.model("Booking", bookingSchema);

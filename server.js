@@ -12,6 +12,7 @@ const amenitiesRouter = require('./routes/amenityRoutes');
 const authRoutes = require('./routes/authRoutes'); 
 const bookingRoutes = require("./routes/bookingRoutes");
 const authMiddleware = require('./middlewares/authMiddleware'); 
+// const emailRoutes = require("./routes/emailRoutes");
 const connectDB = require('./config/db');
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -19,6 +20,7 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
+app.use(express.json());
 app.use(morgan('dev'));
 app.use(express.json());
 connectDB();
@@ -50,6 +52,7 @@ app.use("/api/family-rooms", familyRoomRoutes);
 app.use('/api/amenities', amenitiesRouter);
 app.use('/api/auth', authRoutes);
 app.use("/api", bookingRoutes);
+// app.use("/api/email", emailRoutes);
 // Error Handler
 app.use(errorHandler);
 //--------End
