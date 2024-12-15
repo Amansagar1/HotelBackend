@@ -70,7 +70,7 @@ exports.login = async (req, res, next) => {
     const payload = {
       id: user._id,
       username: user.username,
-
+      email: user.email,
     };
 
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
@@ -85,6 +85,33 @@ exports.login = async (req, res, next) => {
       },
     });
   } catch (error) {
+    next(error);
+  }
+};
+
+
+
+
+// Get User Profile
+exports.getAllUsers = async (req, res, next) => {
+  try {
+    const users = await User.find();
+
+    if (!users || users.length === 0) {
+      return res.status(404).json({ message: 'No users found' });
+    }
+
+    res.status(200).json({
+      message: 'Users retrieved successfully',
+      users: users.map(user => ({
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        mobileNumber: user.mobileNumber,
+      })),
+    });
+  } catch (error) {
+    console.error('Error retrieving users:', error);
     next(error);
   }
 };
