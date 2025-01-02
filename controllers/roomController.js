@@ -1,6 +1,9 @@
 const Room = require('../models/Room');
 const createError = require('http-errors');
-
+const DeluxeRoom = require('../models/DeluxeRoom');
+const SuperDeluxeRoom = require('../models/SuperDeluxeRoom');
+const FamilyRoom = require('../models/FamilyRoom');
+const Booking = require('../models/Booking');
 // // Create a new room type
 // exports.createRoom = async (req, res, next) => {
 //   try {
@@ -88,5 +91,74 @@ exports.deleteRoom = async (req, res, next) => {
     res.status(200).json({ message: 'Room deleted successfully' });
   } catch (error) {
     next(createError(500, error.message));
+  }
+};
+
+
+
+
+// Check room availability
+// Helper function to convert dd/mm/yy to yyyy-mm-dd
+const convertToDate = (date) => {
+  const [day, month, year] = date.split('/');
+  const fullYear = year.length === 2 ? '20' + year : year; // Handle 2-digit years
+  return new Date(`${fullYear}-${month}-${day}`); // Format it as yyyy-mm-dd for Date object
+};
+
+exports.checkRoomAvailability = async (req, res, next) => {
+  try {
+    const { checkIn, checkOut, roomType } = req.query;
+
+    // Validate that both checkIn and checkOut are provided
+    if (!checkIn || !checkOut) {
+      return res.status(400).json({ success: false, message: 'Check-in and check-out dates are required.' });
+    }
+
+    // Convert the dates from dd/mm/yy to yyyy-mm-dd
+    const parsedCheckIn = convertToDate(checkIn);
+    const parsedCheckOut = convertToDate(checkOut);
+
+    // Ensure check-in date is before check-out date
+    if (parsedCheckIn >= parsedCheckOut) {
+      return res.status(400).json({ success: false, message: 'Check-in date must be before check-out date.' });
+    }
+
+    // Validate room type
+    const validRoomTypes = ['DeluxeRoom', 'SuperDeluxeRoom', 'FamilyRoom'];
+    if (!validRoomTypes.includes(roomType)) {
+      return res.status(400).json({ success: false, message: `Invalid room type. Must be one of: ${validRoomTypes.join(', ')}` });
+    }
+
+    // Map roomType to the corresponding model
+    const RoomModel = {
+      DeluxeRoom,
+      SuperDeluxeRoom,
+      FamilyRoom,
+    }[roomType];
+
+    if (!RoomModel) {
+      return res.status(400).json({ success: false, message: 'Invalid room type model mapping.' });
+    }
+
+    // Find bookings that overlap with the requested date range
+    const overlappingBookings = await Booking.find({
+      roomType,
+      $or: [
+        { checkIn: { $lt: parsedCheckOut }, checkOut: { $gt: parsedCheckIn } },
+      ],
+    }).select('room');
+
+    // Get booked room IDs
+    const bookedRoomIds = overlappingBookings.map((booking) => booking.room);
+
+    // Find available rooms that are not booked
+    const availableRooms = await RoomModel.find({
+      _id: { $nin: bookedRoomIds },
+    });
+
+    // Respond with the available rooms
+    return res.status(200).json({ success: true, data: availableRooms });
+  } catch (error) {
+    next(error); // Use centralized error handler
   }
 };
