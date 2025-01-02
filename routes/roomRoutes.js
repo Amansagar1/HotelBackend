@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const roomController = require('../controllers/roomController');
-
+const { checkRoomAvailability } = require('../controllers/roomController');
 // Create a room
 router.post('/', roomController.createRoom);
 
@@ -17,5 +17,6 @@ router.put('/:type', roomController.updateRoom);
 // Delete a room by type
 router.delete('/:type', roomController.deleteRoom);
 
+router.get('/availability', checkRoomAvailability);
 
 module.exports = router;
