@@ -1,8 +1,8 @@
-// const express = require("express");
-// const { sendBookingEmails } = require("../controllers/emailController");
+const express = require("express");
+const { sendBookingEmails } = require("../controllers/emailController");
 
-// const router = express.Router();
+const router = express.Router();
 
-// router.post("/send-booking-emails", sendBookingEmails);
+router.post("/send-booking-emails", sendBookingEmails);
 
-// module.exports = router;
+module.exports = router;

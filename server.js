@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config();
+const dotenv = require('dotenv'); 
 const mongoose = require('mongoose');
 const morgan = require('morgan');
 const roomRoutes = require('./routes/roomRoutes');
@@ -16,11 +16,12 @@ const allroomRoutes = require('./routes/allroomRoutes');
 const footerRoutes = require('./routes/footerRoutes');
 const hotelRoutes = require('./routes/amenitiesSectionRoutes');
 const aboutusRoutes = require('./routes/aboutusRoutes');
+
 // const emailRoutes = require("./routes/emailRoutes");
 const connectDB = require('./config/db');
 const app = express();
 const PORT = process.env.PORT || 5000;
-
+dotenv.config();
 
 // Middleware
 app.use(cors());
@@ -28,12 +29,9 @@ app.use(express.json());
 app.use(morgan('dev'));
 app.use(express.json());
 connectDB();
+
+
 //-------Start
-
-
-
-
-
 
 
 

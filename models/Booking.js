@@ -36,7 +36,8 @@ const bookingSchema = new mongoose.Schema({
   bookingDate: { type: Date, default: Date.now },
   available: { 
     type: String, 
-    required: true,
+    required: true
+   
     
   },
   payment: { 

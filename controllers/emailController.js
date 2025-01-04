@@ -1,48 +1,54 @@
-// const { sendEmail } = require("../utils/emailService");
+// controllers/emailController.js
+const transporter = require('../config/nodemailerConfig');
 
-// const sendBookingEmails = async (req, res) => {
-//   const { bookingDetails } = req.body;
+const sendBookingEmails = async (userEmail, bookingDetails) => {
+  const { firstName, lastName, checkIn, checkOut, price, title } = bookingDetails;
 
-//   // Construct email content for user
-//   const userEmailContent = `
-//     <h1>Booking Confirmation</h1>
-//     <p>Dear ${bookingDetails.firstName} ${bookingDetails.lastName},</p>
-//     <p>Thank you for booking with us! Here are your booking details:</p>
-//     <ul>
-//       <li>Room: ${bookingDetails.title}</li>
-//       <li>Check-in: ${bookingDetails.checkIn} at ${bookingDetails.checkInTime}</li>
-//       <li>Check-out: ${bookingDetails.checkOut} at ${bookingDetails.checkOutTime}</li>
-//       <li>Price: ${bookingDetails.price}</li>
-//     </ul>
-//     <p>We look forward to hosting you!</p>
-//   `;
+  // Prepare the message for the user
+  const userMessage = `
+    <h1>Booking Confirmation</h1>
+    <p>Dear ${firstName} ${lastName},</p>
+    <p>Your booking for <strong>${title}</strong> has been confirmed.</p>
+    <p><strong>Check-in:</strong> ${checkIn}</p>
+    <p><strong>Check-out:</strong> ${checkOut}</p>
+    <p><strong>Price:</strong> ₹${price}</p>
+  `;
 
-//   // Construct email content for admin
-//   const adminEmailContent = `
-//     <h1>New Booking Received</h1>
-//     <p>Details of the new booking:</p>
-//     <ul>
-//       <li>Name: ${bookingDetails.firstName} ${bookingDetails.lastName}</li>
-//       <li>Phone: ${bookingDetails.phone}</li>
-//       <li>Email: ${bookingDetails.email}</li>
-//       <li>Room: ${bookingDetails.title}</li>
-//       <li>Check-in: ${bookingDetails.checkIn} at ${bookingDetails.checkInTime}</li>
-//       <li>Check-out: ${bookingDetails.checkOut} at ${bookingDetails.checkOutTime}</li>
-//       <li>Price: ${bookingDetails.price}</li>
-//     </ul>
-//   `;
+  // Prepare the message for the admin
+  const adminMessage = `
+    <h1>New Booking</h1>
+    <p>A new booking has been made for <strong>${title}</strong> by ${firstName} ${lastName}.</p>
+    <p><strong>Check-in:</strong> ${checkIn}</p>
+    <p><strong>Check-out:</strong> ${checkOut}</p>
+    <p><strong>Price:</strong> ₹${price}</p>
+    <p><strong>User Email:</strong> ${userEmail}</p>
+  `;
 
-//   try {
-//     // Send email to user
-//     await sendEmail(bookingDetails.email, "Booking Confirmation", userEmailContent);
+  try {
+    // Send email to the user
+    const userInfo = await transporter.sendMail({
+      from: process.env.ADMIN_EMAIL,
+      to: userEmail,
+      subject: 'Booking Confirmation',
+      html: userMessage,
+    });
+    console.log('Email sent to user:', userInfo.messageId);
 
-//     // Send email to admin
-//     await sendEmail("hotelsudarshan01@gmail.com", "New Booking Received", adminEmailContent);
+    // Send email to the admin
+    const adminInfo = await transporter.sendMail({
+      from: process.env.ADMIN_EMAIL,
+      to: process.env.ADMIN_EMAIL,  // Admin's email
+      subject: 'New Booking',
+      html: adminMessage,
+    });
+    console.log('Email sent to admin:', adminInfo.messageId);
 
-//     res.status(200).json({ success: true, message: "Emails sent successfully!" });
-//   } catch (error) {
-//     res.status(500).json({ success: false, message: "Error sending emails.", error });
-//   }
-// };
+  } catch (error) {
+    console.error('Error sending email:', error);
+    throw new Error('Email sending failed');
+  }
+};
 
-// module.exports = { sendBookingEmails };
+module.exports = {
+  sendBookingEmails,
+};
