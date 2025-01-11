@@ -7,6 +7,7 @@ const deluxeRoomSchema = new mongoose.Schema({
   amenities: [String],
   price: { type: Number, required: true },
   available:[String],
+   image: { type: String, required: true } ,
   roomnumber:{
     type: Number,
     required: true,

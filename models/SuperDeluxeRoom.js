@@ -6,6 +6,7 @@ const superDeluxeRoomSchema = new mongoose.Schema({
     required: true,
     default: "Super Deluxe Room",
   },
+  image: { type: String, required: true } ,
   price: { type: Number, required: true },
   rating:{
     type: Number,
