@@ -16,7 +16,7 @@ const allroomRoutes = require('./routes/allroomRoutes');
 const footerRoutes = require('./routes/footerRoutes');
 const hotelRoutes = require('./routes/amenitiesSectionRoutes');
 const aboutusRoutes = require('./routes/aboutusRoutes');
-
+const nodemailer = require('nodemailer');
 // const emailRoutes = require("./routes/emailRoutes");
 const connectDB = require('./config/db');
 const app = express();
@@ -28,12 +28,49 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 app.use(express.json());
+app.use(cors({
+  origin: 'http://localhost:3000', // Update this for production
+}));
 connectDB();
 
 
 //-------Start
+//mail
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  secure: true,
+  port: 465,
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.EMAIL_PASSWORD,
+  },
+});
 
+// Email sending endpoint
+app.post('/send-email', (req, res) => {
+  const { name, email, subject, message } = req.body;
 
+  // Validation
+  if (!name || !email || !subject || !message) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
+
+  const mailOptions = {
+    from: `"${name}" <${email}>`,
+    to: process.env.RECEIVER_EMAIL,
+    subject: subject || 'No Subject',
+    text: message || 'No message provided.',
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.error('Error sending email:', error);
+      return res.status(500).json({ message: 'Error sending email', error });
+    }
+    console.log('Email sent successfully:', info.response);
+    res.status(200).json({ message: 'Email sent successfully', info });
+  });
+});
 
 
 
