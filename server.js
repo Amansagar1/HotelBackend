@@ -29,13 +29,16 @@ app.use(express.json());
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(cors({
-  origin: 'http://localhost:3000', // Update this for production
+  origin: process.env.ORIGIN_URL , // Update this for production
 }));
 connectDB();
 
 
 //-------Start
-//mail
+
+
+
+// Transporter setup
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   secure: true,
@@ -55,24 +58,42 @@ app.post('/send-email', (req, res) => {
     return res.status(400).json({ message: 'All fields are required' });
   }
 
-  const mailOptions = {
+  // Setup the mail options for the receiver
+  const receiverMailOptions = {
     from: `"${name}" <${email}>`,
-    to: process.env.RECEIVER_EMAIL,
+    to: process.env.RECEIVER_EMAIL,  // Receiver email (e.g., a support email)
     subject: subject || 'No Subject',
     text: message || 'No message provided.',
   };
 
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.error('Error sending email:', error);
-      return res.status(500).json({ message: 'Error sending email', error });
+  // Setup the mail options for the sender (confirming the email)
+  const senderMailOptions = {
+    from: process.env.EMAIL,  // Your email address
+    to: email,  // The sender's email
+    subject: `Copy of your message: ${subject || 'No Subject'}`,
+    text: `Hello ${name},\n\nThank you for reaching out. Here's a copy of your message:\n\n${message}\n\nWe will get back to you shortly.\n\nBest regards,\nHotel Sudarshan team`,
+  };
+
+  // Send email to the receiver
+  transporter.sendMail(receiverMailOptions, (receiverError, receiverInfo) => {
+    if (receiverError) {
+      console.error('Error sending email to receiver:', receiverError);
+      return res.status(500).json({ message: 'Error sending email to receiver', receiverError });
     }
-    console.log('Email sent successfully:', info.response);
-    res.status(200).json({ message: 'Email sent successfully', info });
+
+    // Send email to the sender (confirmation email)
+    transporter.sendMail(senderMailOptions, (senderError, senderInfo) => {
+      if (senderError) {
+        console.error('Error sending email to sender:', senderError);
+        return res.status(500).json({ message: 'Error sending email to sender', senderError });
+      }
+
+      console.log('Emails sent successfully:', receiverInfo.response, senderInfo.response);
+      res.status(200).json({ message: 'Emails sent successfully', receiverInfo, senderInfo });
+    });
   });
 });
-
-
+//
 
 // // After booking creation
 // sendBookingConfirmationEmail(user); // Send confirmation email immediately
