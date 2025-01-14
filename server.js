@@ -18,6 +18,8 @@ const hotelRoutes = require('./routes/amenitiesSectionRoutes');
 const aboutusRoutes = require('./routes/aboutusRoutes');
 const nodemailer = require('nodemailer');
 // const emailRoutes = require("./routes/emailRoutes");
+const https = require('https');
+const fs = require('fs');
 const connectDB = require('./config/db');
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -27,9 +29,8 @@ dotenv.config();
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
-app.use(express.json());
 app.use(cors({
-  origin: process.env.ORIGIN_URL , // Update this for production
+  origin: 'https://hotelsudarshan.com', // Update this for production
 }));
 connectDB();
 
@@ -126,9 +127,20 @@ app.use(errorHandler);
 app.get('/', (req, res) => {
     res.send('Hotel Booking API is running...');
   });
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+// Start the server// HTTPS Server Setup
+const options = {
+  cert: fs.readFileSync('./certificates/fullchain.pem'),
+  key: fs.readFileSync('./certificates/privkey.pem'),
+};
+
+// Create an HTTPS server
+https.createServer(options, app).listen(5000, () => {
+  console.log(`Server running on  ${PORT}`);
 });
+
+// Create an HTTPS server to handle requests
+// https.createServer(options, app).listen(5000, () => {
+//   console.log('Backend running on https://hotelsudarshan.com:5000');
+// });
 
 module.exports = app;
