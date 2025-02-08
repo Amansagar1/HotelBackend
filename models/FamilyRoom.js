@@ -8,6 +8,7 @@ const familyRoomSchema = new mongoose.Schema({
   },
   image: { type: String, required: true } ,
   price: { type: Number, required: true },
+  description: { type: String },
   rating:{
     type: Number,
     required: true,

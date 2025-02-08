@@ -4,6 +4,7 @@ const deluxeRoomSchema = new mongoose.Schema({
   name: { type: String, default: "Deluxe Room" },
   size: { type: String, default: "150 sq ft" },
   maxOccupancy: { type: Number, default: 2 },
+  description: { type: String },
   amenities: [String],
   price: { type: Number, required: true },
   available:[String],
@@ -19,6 +20,7 @@ const deluxeRoomSchema = new mongoose.Schema({
     min: 0,
     max: 5,
   },
+
   features: [String],
   bedsAndBlankets: [String],
   safetyAndSecurity: [String],
