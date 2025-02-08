@@ -9,8 +9,8 @@ const bookingSchema = new mongoose.Schema({
   phone: { 
     type: String, 
     required: true, 
-    match: [/^\d{10}$/, 'Please enter a valid 10-digit phone number.'] 
-  },
+    match: [/^\+?[1-9]\d{1,14}$/, 'Please enter a valid phone number with country code (optional).'] 
+  },  
   email: { 
     type: String, 
     required: true, 
