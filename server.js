@@ -128,13 +128,10 @@ app.get('/', (req, res) => {
     res.send('Hotel Booking API is running...');
   });
 // Start the server// HTTPS Server Setup
-const options = {
-  cert: fs.readFileSync('./certificates/fullchain.pem'),
-  key: fs.readFileSync('./certificates/privkey.pem'),
-};
+
 
 // Create an HTTPS server
-https.createServer(options, app).listen(5000, () => {
+https.createServer( app).listen(5000, () => {
   console.log(`Server running on  ${PORT}`);
 });
 
