@@ -22,7 +22,7 @@ const https = require('https');
 const fs = require('fs');
 const connectDB = require('./config/db');
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 dotenv.config();
 
 // Middleware
@@ -128,16 +128,19 @@ app.get('/', (req, res) => {
     res.send('Hotel Booking API is running...');
   });
 // Start the server// HTTPS Server Setup
-
+const options = {
+  cert: fs.readFileSync('./certificates/fullchain.pem'),
+  key: fs.readFileSync('./certificates/privkey.pem'),
+};
 
 // Create an HTTPS server
-https.createServer( app).listen(5000, () => {
+https.createServer(options, app).listen(8080, () => {
   console.log(`Server running on  ${PORT}`);
 });
 
 // Create an HTTPS server to handle requests
-// https.createServer(options, app).listen(5000, () => {
-//   console.log('Backend running on https://hotelsudarshan.com:5000');
+// https.createServer(options, app).listen(8080, () => {
+//   console.log('Backend running on https://hotelsudarshan.com:8080');
 // });
 
 module.exports = app;
