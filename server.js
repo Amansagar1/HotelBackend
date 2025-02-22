@@ -26,6 +26,8 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 dotenv.config();
 require('./config/passport')
+const session = require('express-session');
+
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -35,6 +37,18 @@ app.use(cors({
 }));
 connectDB();
 app.use(passport.initialize());
+
+// Session setup
+app.use(session({
+  secret: 'your-secret-key', // Change this to something more secure
+  resave: false,
+  saveUninitialized: true,
+}));
+
+app.use(passport.session());
+
+
+
 
 //-------Start
 
