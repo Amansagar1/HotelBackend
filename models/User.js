@@ -43,16 +43,17 @@ const userSchema = new Schema({
   },
   password: {
     type: String,
-    required: [true, 'Password is required'],
+    required: function() { return !this.googleId; }, // Password is required only if googleId is not present
   },
   confirmPassword: {
     type: String,
-    required: [true, 'Password is required'],
+    required: function() { return !this.googleId; }, // Confirm Password is required only if googleId is not present
   },
-  // role: {
-  //   type: String,
-  //   default: 'user', // Default role is 'user'
-  // },
-}, );
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true, // Allows null values but ensures uniqueness for non-null values
+  },
+});
 
 module.exports = mongoose.model('User', userSchema);

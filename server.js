@@ -1,4 +1,5 @@
 const express = require('express');
+const passport = require('passport');
 const cors = require('cors');
 const dotenv = require('dotenv'); 
 const mongoose = require('mongoose');
@@ -24,7 +25,7 @@ const connectDB = require('./config/db');
 const app = express();
 const PORT = process.env.PORT || 5000;
 dotenv.config();
-
+require('./config/passport')
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -33,7 +34,7 @@ app.use(cors({
   origin: 'https://hotelsudarshan.com', // Update this for production
 }));
 connectDB();
-
+app.use(passport.initialize());
 
 //-------Start
 
@@ -111,7 +112,7 @@ app.use("/api/deluxe-rooms", deluxeRoomRoutes);
 app.use("/api/super-deluxe-rooms", superDeluxeRoomRoutes);
 app.use("/api/family-rooms", familyRoomRoutes);
 app.use('/api/amenities', amenitiesRouter);
-app.use('/api/auth', authRoutes);
+app.use('/api', authRoutes);
 app.use("/api", bookingRoutes);
 app.use('/api/allrooms', allroomRoutes);
 app.use('/api/footer', footerRoutes);
