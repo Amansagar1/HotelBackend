@@ -33,20 +33,22 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 app.use(cors({
-  origin: 'https://hotelsudarshan.com', // Update this for production
+  origin: 'https://localhost:3000', // Update this for production
 }));
 connectDB();
 app.use(passport.initialize());
 
 // Session setup
 app.use(session({
-  secret: 'your-secret-key', // Change this to something more secure
+  secret: process.env.JWT_SECRET,
   resave: false,
   saveUninitialized: true,
 }));
 
+// Passport initialization
+app.use(passport.initialize());
 app.use(passport.session());
-
+require('./config/passport'); // Passport configuration
 
 
 
@@ -126,7 +128,8 @@ app.use("/api/deluxe-rooms", deluxeRoomRoutes);
 app.use("/api/super-deluxe-rooms", superDeluxeRoomRoutes);
 app.use("/api/family-rooms", familyRoomRoutes);
 app.use('/api/amenities', amenitiesRouter);
-app.use('/api', authRoutes);
+// Routes
+app.use('/auth', authRoutes);
 app.use("/api", bookingRoutes);
 app.use('/api/allrooms', allroomRoutes);
 app.use('/api/footer', footerRoutes);
@@ -146,6 +149,8 @@ app.get('/', (req, res) => {
 const options = {
   cert: fs.readFileSync('./certificates/fullchain.pem'),
   key: fs.readFileSync('./certificates/privkey.pem'),
+  //   cert: fs.readFileSync('/etc/letsencrypt/live/hotelsudarshan.com/fullchain.pem'),
+// key: fs.readFileSync('/etc/letsencrypt/live/hotelsudarshan.com/privkey.pem'),
 };
 
 // Create an HTTPS server
