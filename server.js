@@ -40,15 +40,13 @@ app.use(passport.initialize());
 
 // Session setup
 app.use(session({
-  secret: process.env.JWT_SECRET,
+  secret: 'your-secret-key', // Change this to something more secure
   resave: false,
   saveUninitialized: true,
 }));
 
-// Passport initialization
-app.use(passport.initialize());
 app.use(passport.session());
-require('./config/passport'); // Passport configuration
+
 
 
 
@@ -128,8 +126,7 @@ app.use("/api/deluxe-rooms", deluxeRoomRoutes);
 app.use("/api/super-deluxe-rooms", superDeluxeRoomRoutes);
 app.use("/api/family-rooms", familyRoomRoutes);
 app.use('/api/amenities', amenitiesRouter);
-// Routes
-app.use('/auth', authRoutes);
+app.use('/api', authRoutes);
 app.use("/api", bookingRoutes);
 app.use('/api/allrooms', allroomRoutes);
 app.use('/api/footer', footerRoutes);
@@ -147,10 +144,8 @@ app.get('/', (req, res) => {
   });
 // Start the server// HTTPS Server Setup
 const options = {
-  // cert: fs.readFileSync('./certificates/fullchain.pem'),
-  // key: fs.readFileSync('./certificates/privkey.pem'),
-    cert: fs.readFileSync('/etc/letsencrypt/live/hotelsudarshan.com/fullchain.pem'),
-key: fs.readFileSync('/etc/letsencrypt/live/hotelsudarshan.com/privkey.pem'),
+  cert: fs.readFileSync('./certificates/fullchain.pem'),
+  key: fs.readFileSync('./certificates/privkey.pem'),
 };
 
 // Create an HTTPS server
