@@ -202,13 +202,16 @@ exports.login = async (req, res) => {
 };
 
 // Google OAuth Callback
+// Google OAuth Callback
 exports.googleCallback = async (req, res) => {
   try {
-    const { googleId, email, username } = req.user;
+    const { googleId, email, username } = req.user; // Passport injects the user here after successful authentication
 
+    // Check if the user already exists in the database
     let user = await User.findOne({ googleId });
 
     if (!user) {
+      // If the user doesn't exist, create a new user
       user = new User({
         googleId,
         email,
@@ -217,8 +220,10 @@ exports.googleCallback = async (req, res) => {
       await user.save();
     }
 
+    // Generate JWT token
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
+    // Send the response with the JWT token and user details
     res.status(200).json({
       message: 'User logged in successfully with Google',
       token,

@@ -49,31 +49,9 @@
 // module.exports = passport;
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const LocalStrategy = require('passport-local').Strategy;
 const User = require('../models/User');
-const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
-// Local Strategy
-passport.use(
-  new LocalStrategy(
-    { usernameField: 'email' },
-    async (email, password, done) => {
-      try {
-        const user = await User.findOne({ email });
-        if (!user) return done(null, false, { message: 'Incorrect email or password' });
-
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return done(null, false, { message: 'Incorrect email or password' });
-
-        return done(null, user);
-      } catch (error) {
-        return done(error);
-      }
-    }
-  )
-);
-
-// Google Strategy
 passport.use(
   new GoogleStrategy(
     {
@@ -82,8 +60,7 @@ passport.use(
       callbackURL: process.env.CALLBACK_URL,
     },
     async (accessToken, refreshToken, profile, done) => {
-      // Handle user authentication
-          try {
+      try {
         let user = await User.findOne({ googleId: profile.id });
 
         if (!user) {
@@ -95,16 +72,15 @@ passport.use(
           await user.save();
         }
 
-        return done(null, user);
+        done(null, user); // This will pass the user to the callback route
       } catch (error) {
-        return done(error);
+        done(error, null);
       }
     }
   )
 );
 
-
-// Serialize and Deserialize User
+// Serialize and Deserialize User (if using sessions)
 passport.serializeUser((user, done) => done(null, user.id));
 passport.deserializeUser(async (id, done) => {
   try {

@@ -33,7 +33,7 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 app.use(cors({
-  origin: 'https://localhost:3000', // Update this for production
+  origin: 'https://hotelsudarshan.com', // Update this for production
 }));
 connectDB();
 app.use(passport.initialize());
@@ -147,10 +147,10 @@ app.get('/', (req, res) => {
   });
 // Start the server// HTTPS Server Setup
 const options = {
-  cert: fs.readFileSync('./certificates/fullchain.pem'),
-  key: fs.readFileSync('./certificates/privkey.pem'),
-  //   cert: fs.readFileSync('/etc/letsencrypt/live/hotelsudarshan.com/fullchain.pem'),
-// key: fs.readFileSync('/etc/letsencrypt/live/hotelsudarshan.com/privkey.pem'),
+  // cert: fs.readFileSync('./certificates/fullchain.pem'),
+  // key: fs.readFileSync('./certificates/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/hotelsudarshan.com/fullchain.pem'),
+key: fs.readFileSync('/etc/letsencrypt/live/hotelsudarshan.com/privkey.pem'),
 };
 
 // Create an HTTPS server
